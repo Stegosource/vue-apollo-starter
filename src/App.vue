@@ -1,17 +1,43 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <p v-if="isLoading">LOADING.....</p>
+    <button
+      v-else
+      @click="onClick"
+    >Click</button>
   </div>
 </template>
 
 <script>
-import HelloWorld from "./components/HelloWorld.vue";
+import gql from "graphql-tag";
+
+const ALL_PRODUCTS_QUERY = gql`
+  query ALL_PRODUCTS_QUERY {
+    allProducts {
+      name
+      price
+    }
+  }
+`;
 
 export default {
   name: "app",
-  components: {
-    HelloWorld
+  data: () => ({
+    isLoading: 0
+  }),
+  apollo: {
+    allProducts: {
+      query: ALL_PRODUCTS_QUERY
+      // variables: {}
+    }
+  },
+  methods: {
+    async onClick() {
+      const res = await this.$apollo.query({
+        query: ALL_PRODUCTS_QUERY
+      });
+      console.log(res);
+    }
   }
 };
 </script>
